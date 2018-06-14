@@ -2,7 +2,8 @@ import requests
 import json
 import sys
 
-# https://developers.eos.io/eosio-nodeos/reference HTTP API
+# HTTP API link
+# https://developers.eos.io/eosio-nodeos/reference
 
 def 	printJsonInfo(info):
 	for x in info:
