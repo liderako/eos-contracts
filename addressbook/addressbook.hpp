@@ -1,7 +1,7 @@
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/print.hpp>
 
-namespace addressbook {
+namespace book {
 	using namespace eosio;
 
 	class addressbook : public eosio::contract {
@@ -31,6 +31,9 @@ namespace addressbook {
 			[[eosio::action]]
 			void remove(account_name user);
 
+			[[eosio::action]]
+			void notify(account_name user, std::string msg);
+
 		private:
 			struct [[eosio::table]] person {
 				uint64_t key;
@@ -42,8 +45,12 @@ namespace addressbook {
 
 				uint64_t primary_key() const;
 			};
-		
+
 		typedef eosio::multi_index<N( person ), person> address_index;
+
+		void send_summary(account_name user, std::string message);
+
+		void increment_counter( account_name user, std::string type );
 	};
-	EOSIO_ABI( addressbook, (load)(modify)(remove))
 }
+// EOSIO_ABI( book::addressbook, (load)(modify)(remove)(notify))

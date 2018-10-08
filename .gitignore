@@ -1,0 +1,4 @@
+addressbook/*.wasm
+addressbook/*.abi
+abcounter/*.wasm
+abcounter/*.abi
