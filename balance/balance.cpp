@@ -7,31 +7,37 @@ namespace balancebook {
 		balance_of( _self, _self )
 	{}
 
-	void 		balance::deposit( const account_name sender, const asset& amount ) {
-		require_auth( sender );
+	void 		balance::deposit( const account_name _sender, const asset& _quantity ) {
+		auto data = unpack_action_data<balance::transfer_args>();
+
+		if (data.from == _self || data.to != _self)
+			return ;
+		const account_name from = data.from;
+		const asset amount = data.amount;
+
+		require_auth( from );
 		assert_amount( amount );
 
-		auto iterator = balance_of.find( sender );
-		transfer( sender, _self, amount );
+		auto iterator = balance_of.find( from );
 		if ( iterator == balance_of.end() ) {
-			create_balance( sender, amount, iterator );
+			create_balance( from, amount, iterator );
 		}
 		else {
-			add_balance( sender, amount, iterator );
+			add_balance( from, amount, iterator );
 		}
 	}
 
-	void 		balance::withdraw( const account_name sender, const asset& amount ) {
-		require_auth( sender );
+	void 		balance::withdraw( const account_name from, const asset& amount ) {
+		require_auth( from );
 		assert_amount( amount );
 
-		auto iterator = balance_of.find( sender );
+		auto iterator = balance_of.find( from );
 		if (iterator == balance_of.end()) {
 			eosio_assert( false, "unknown user");
 		}
-		sub_balance( sender, amount, iterator );
+		sub_balance( from, amount, iterator );
 		
-		transfer( _self, sender, amount );
+		transfer( _self, from, amount );
 
 		if( iterator->is_empty() ) {
 			delete_balance( iterator );
@@ -41,7 +47,7 @@ namespace balancebook {
 // private
 	template<typename T>
 	void	balance::create_balance( const account_name user, const asset& amount, T iterator) {
-		balance_of.emplace( user, [&]( auto& row ) {
+		balance_of.emplace( _self, [&]( auto& row ) {
 			row.owner = user;
 			row.eos_balance = amount;
 		});
@@ -49,14 +55,14 @@ namespace balancebook {
 	
 	template<typename T>
 	void	balance::add_balance( const account_name user, const asset& amount, T iterator) {
-		balance_of.modify( iterator, user, [&]( auto& row ) {
+		balance_of.modify( iterator, _self, [&]( auto& row ) {
 			row.eos_balance += amount;
 		});
 	}
 
 	template<typename T>
 	void	balance::sub_balance( const account_name user, const asset& amount, T iterator) {
-		balance_of.modify( iterator, user, [&]( auto& row ) {
+		balance_of.modify( iterator, _self, [&]( auto& row ) {
 			eosio_assert( row.eos_balance >= amount, "insufficient balance" );
 			row.eos_balance -= amount;
 		});
@@ -94,7 +100,7 @@ using namespace balancebook;
 
 	void apply(uint64_t self, uint64_t code, uint64_t action) {
 		balance _balance(self);
-		if( code == self && action == N(deposit) ) {
+		if(code == N(eosio.token) && action == N(transfer) ) {
 			execute_action( &_balance, &balance::deposit );
 		}
 		else if ( code == self && action == N(withdraw) ) {
@@ -103,4 +109,4 @@ using namespace balancebook;
 	}
 };
 
-// cleos set account permission addressbook active '{"threshold": 1,"keys": [{"key": "","weight": 1}], "accounts": [{"permission":{"actor":"addressbook","permission":"eosio.code"},"weight":1}]}' -p addressbook@owner
+// cleos set account permission balance1111 active '{"threshold": 1,"keys": [{"key": "","weight": 1}], "accounts": [{"permission":{"actor":"balance1111","permission":"eosio.code"},"weight":1}]}' -p balance1111@owner

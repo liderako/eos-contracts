@@ -9,7 +9,7 @@ using namespace eosio;
 
 			[[eosio::action]]
 			void hi( account_name user ) {
-				print( "Hello1, ", name{user} );
+				print( "Hello, ", name{user} );
 			}
 	};
 EOSIO_ABI( hello, (hi))

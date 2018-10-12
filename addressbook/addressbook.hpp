@@ -1,5 +1,4 @@
 #include <eosiolib/eosio.hpp>
-#include <eosiolib/print.hpp>
 
 namespace book {
 	using namespace eosio;

@@ -1,0 +1,1 @@
+set account permission balance12345 active '{"threshold": 1,"keys": [{"key": "EOS7BURaY54xd3cDPzNdotzxLRg8VHt8t1JhfzRm46p514WYnvmM4","weight": 1}], "accounts": [{"permission":{"actor":"balance12345","permission":"eosio.code"},"weight":1}]}' -p balance12345@owner

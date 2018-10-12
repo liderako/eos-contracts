@@ -111,11 +111,5 @@ using namespace book;
 		else if( code == self && action == N(erase) ) {
 			execute_action( &_addressbook, &addressbook::remove );
 		}
-//		else if(code == N(eosio.token) && action == N(transfer)) {
-//			execute_action( &_addressbook, &addressbook::transfer );
-//		} why? What is that? it's for transfer token or eos coin?
 	}
 };
-
-
-// cleos set account permission addressbook active '{"threshold": 1,"keys": [{"key": "EOS6L5Z8Au49eQ1i1v2eEYRWBPnbgTRVKi9SVeV2t4bFW485uiUKN","weight": 1}], "accounts": [{"permission":{"actor":"addressbook","permission":"eosio.code"},"weight":1}]}' -p addressbook@owner

@@ -11,6 +11,12 @@ namespace balancebook {
 			void withdraw( const account_name sender, const asset& quantity );
 			[[eosio::action]]
 			void deposit( const account_name sender, const asset& quantity );
+			struct transfer_args {
+				account_name  from;
+				account_name  to;
+				asset         amount;
+				std::string        memo;
+			};
 		private:
 			struct [[eosio::table]] t_balance {
 				account_name 	owner;
