@@ -7,25 +7,30 @@ namespace balancebook {
 	class balance : public eosio::contract {
 		public:
 			balance( account_name self );
+
 			[[eosio::action]]
 			void withdraw( const account_name sender, const asset& quantity );
+
 			[[eosio::action]]
 			void deposit( const account_name sender, const asset& quantity );
+			
 			struct transfer_args {
-				account_name  from;
-				account_name  to;
-				asset         amount;
-				std::string        memo;
+				account_name	from;
+				account_name	to;
+				asset			amount;
+				std::string		memo;
 			};
+
+			balance_index 	get_balance_of() const { return (balance_of); }
+
 		private:
 			struct [[eosio::table]] t_balance {
-				account_name 	owner;
-				asset 			eos_balance;
+				account_name	owner;
+				asset			eos_balance;
 
-				uint64_t 		primary_key() const;
-				bool 			is_empty() const;
+				uint64_t		primary_key() const;
+				bool			is_empty() const;
 			};
-
 			typedef eosio::multi_index<N(balance.of), t_balance> balance_index;
 
 			balance_index 	balance_of;
