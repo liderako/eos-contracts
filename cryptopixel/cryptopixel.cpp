@@ -23,9 +23,10 @@ void 	cryptopixel::buypixel( account_name sender, checksum256 id ) {
 	require_auth( sender );
 
 	// если у пользователя нету денег отклонить
-	auto iterator_balance = get_balance_of().find( sender );
 
-	eosio_assert( iterator_balance != get_balance_of().end(), "user don't have a balance" );
+	auto iterator_balance = balance_of.find( sender );
+
+	eosio_assert( iterator_balance != balance_of.end(), "user don't have a balance" );
 	eosio_assert( iterator_balance->eos_balance >= PRICE, "user don't have enough money");
 
 	sub_balance( sender, PRICE, iterator_balance );

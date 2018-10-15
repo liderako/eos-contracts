@@ -21,22 +21,6 @@ namespace balancebook {
 				std::string		memo;
 			};
 
-			balance_index 	get_balance_of() const { return (balance_of); }
-
-		private:
-			struct [[eosio::table]] t_balance {
-				account_name	owner;
-				asset			eos_balance;
-
-				uint64_t		primary_key() const;
-				bool			is_empty() const;
-			};
-			typedef eosio::multi_index<N(balance.of), t_balance> balance_index;
-
-			balance_index 	balance_of;
-
-			void 	assert_amount( const asset& amount );
-
 			template<typename T>
 			void	create_balance( const account_name user, const asset& quantity, T iterator );
 			
@@ -48,6 +32,21 @@ namespace balancebook {
 
 			template<typename T>
 			void	delete_balance( T iterator );
+
+		protected:
+			struct [[eosio::table]] t_balance {
+				account_name	owner;
+				asset			eos_balance;
+
+				uint64_t		primary_key() const;
+				bool			is_empty() const;
+			};
+			typedef eosio::multi_index<N(balance.of), t_balance> balance_index;
+			
+			balance_index 	balance_of;
+
+		private:
+			void 	assert_amount( const asset& amount );
 
 			void 	transfer( const account_name from, const account_name to, const asset& amount );
 	};
