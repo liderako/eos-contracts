@@ -12,5 +12,8 @@ extern "C" {
 		else if ( code == self && action == N(buypixel) ) {
 			execute_action( &_pixel, &cryptopixel::buypixel );
 		}
+		else if ( code == self && action == N(transfer) ) {
+			execute_action( &_pixel, &cryptopixel::transfer );
+		}
 	}
 };

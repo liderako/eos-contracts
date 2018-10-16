@@ -54,9 +54,13 @@ void 	cryptopixel::buypixel( account_name sender, uint64_t x, uint64_t y, uint64
 void 	cryptopixel::transfer( account_name sender, account_name to, uint64_t id ) {
 	require_auth( sender );
 
-	// если id нету отклонить
-	// если владелец id не sender отклонить
-	// если to не существует отклонить?? Как сделать
+	auto iterator_id = pixel_of.find( id );
+	eosio_assert( iterator_id != pixel_of.end(), "pixel doesn't exists" );
+	eosio_assert( iterator_id->_owner == sender, "user is not owner" );
+	
+	pixel_of.modify( iterator_id, _self, [&]( auto& row ) {
+		row._owner = to;
+	});
 }
 
 // private
