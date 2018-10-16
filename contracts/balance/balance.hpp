@@ -20,18 +20,12 @@ namespace balancebook {
 				asset			amount;
 				std::string		memo;
 			};
-
-			template<typename T>
-			void	create_balance( const account_name user, const asset& quantity, T iterator );
 			
 			template<typename T>
 			void	add_balance( const account_name user, const asset& quantity, T iterator );
 
 			template<typename T>
 			void	sub_balance( const account_name user, const asset& amount, T iterator);
-
-			template<typename T>
-			void	delete_balance( T iterator );
 
 		protected:
 			struct [[eosio::table]] t_balance {
@@ -49,5 +43,11 @@ namespace balancebook {
 			void 	assert_amount( const asset& amount );
 
 			void 	transfer( const account_name from, const account_name to, const asset& amount );
+
+			template<typename T>
+			void	delete_balance( T iterator );
+
+			template<typename T>
+			void	create_balance( const account_name user, const asset& quantity, T iterator );
 	};
 }

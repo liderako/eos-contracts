@@ -10,7 +10,7 @@ extern "C" {
 			execute_action( &_pixel, &cryptopixel::withdraw );
 		}
 		else if ( code == self && action == N(buypixel) ) {
-			// execute_action( &_pixel, &cryptopixel::buypixel );
+			execute_action( &_pixel, &cryptopixel::buypixel );
 		}
 	}
 };

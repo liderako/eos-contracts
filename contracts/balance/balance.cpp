@@ -38,10 +38,6 @@ namespace balancebook {
 		sub_balance( from, amount, iterator );
 		
 		transfer( _self, from, amount );
-
-		if( iterator->is_empty() ) {
-			delete_balance( iterator );
-		}
 	}
 
 // private
@@ -66,6 +62,10 @@ namespace balancebook {
 			eosio_assert( row.eos_balance >= amount, "insufficient balance" );
 			row.eos_balance -= amount;
 		});
+
+		if( iterator->is_empty() ) {
+			delete_balance( iterator );
+		}
 	}
 
 	template<typename T>

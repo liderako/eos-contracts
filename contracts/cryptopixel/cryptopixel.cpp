@@ -1,7 +1,9 @@
 #include "cryptopixel.hpp"
 
+// cryptopixel::_price(1000, N(EOS));
 // public
-cryptopixel::cryptopixel( account_name self ) : balance(self) {}
+cryptopixel::cryptopixel( account_name self ) : balance(self), _price(10000, eosio::string_to_symbol(4,"EOS")) {
+}
 
 cryptopixel::t_color::t_color(
 		checksum256 id,
@@ -25,11 +27,10 @@ void 	cryptopixel::buypixel( account_name sender, checksum256 id ) {
 	// если у пользователя нету денег отклонить
 
 	auto iterator_balance = balance_of.find( sender );
-
 	eosio_assert( iterator_balance != balance_of.end(), "user don't have a balance" );
-	eosio_assert( iterator_balance->eos_balance >= PRICE, "user don't have enough money");
+	eosio_assert( iterator_balance->eos_balance >= _price, "user don't have enough money");
 
-	sub_balance( sender, PRICE, iterator_balance );
+	sub_balance( sender, _price, iterator_balance );
 }
 
 void 	cryptopixel::transfer( account_name sender, account_name to, checksum256 id ) {

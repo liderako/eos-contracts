@@ -1,5 +1,6 @@
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/asset.hpp>
+#include <eosiolib/symbol.hpp>
 #include "../balance/balance.cpp"
 
 class cryptopixel : public balancebook::balance {
@@ -35,11 +36,11 @@ class cryptopixel : public balancebook::balance {
 				void			only_owner( account_name owner ) const;
 		};
 
-		static const uint32_t MAX_X = 1000;
+		static uint32_t const MAX_X = 1000;
 
-		static const uint32_t MAX_Y = 1000;
+		static uint32_t const MAX_Y = 1000;
 
-		const eosio::asset PRICE;
+		eosio::asset _price;
 
 		typedef eosio::multi_index<N(pixel.map), t_color> pixel_index;
 };
