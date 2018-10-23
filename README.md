@@ -1,1 +1,3 @@
-# EOS_projects_1.0.1
+# eos contracts
+
+> eosio.cdt 1.32
