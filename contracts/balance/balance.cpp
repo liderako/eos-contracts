@@ -89,7 +89,7 @@ namespace balancebook {
 	}
 
 	uint64_t 	balance::t_balance::primary_key() const {
-		return (owner);
+		return (owner.value);
 	}
 
 	void		balance::assert_amount( const eosio::asset& amount ) {
