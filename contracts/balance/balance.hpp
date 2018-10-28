@@ -12,7 +12,7 @@ namespace balancebook {
 			ACTION deposit( const eosio::name sender, const eosio::asset& quantity );
 			
 			struct transfer_args {
-				eosio::name		sfrom;
+				eosio::name		from;
 				eosio::name		to;
 				eosio::asset 	amount;
 				std::string		memo;
