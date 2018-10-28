@@ -2,28 +2,32 @@
 
 namespace balancebook {
 //public
-	balance::balance( account_name self ) :
-		contract( self ),
-		balance_of( _self, _self )
+	// addressbook::addressbook(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds) : contract(receiver, code, ds) {}
+	balance::balance(
+			eosio::name receiver,
+			eosio::name code,
+			eosio::datastream<const char*> ds
+		)
+		: contract(receiver, code, ds)
 	{
-		auto iterator = balance_of.find( _self );
-		if ( iterator == balance_of.end() ) {
-			create_balance( _self, eosio::asset(0, eosio::string_to_symbol(4,"EOS")) );
-		}
+		// auto iterator = balance_of.find( _code.value );
+		// if ( iterator == balance_of.end() ) {
+		// 	create_balance( receiver, eosio::asset(0, eosio::string_to_symbol(4,"EOS")) );
+		// }
 	}
 
-	void 		balance::deposit( const account_name _sender, const eosio::asset& _quantity ) {
+	void 		balance::deposit( const eosio::name _sender, const eosio::asset& _quantity ) {
 		auto data = eosio::unpack_action_data<balance::transfer_args>();
 
 		if (data.from == _self || data.to != _self)
 			return ;
-		const account_name from = data.from;
+		const eosio::name from = data.from;
 		const eosio::asset amount = data.amount;
 
 		require_auth( from );
 		assert_amount( amount );
 
-		auto iterator = balance_of.find( from );
+		auto iterator = balance_of.find( from.value );
 		if ( iterator == balance_of.end() ) {
 			create_balance( from, amount);
 		}
@@ -32,11 +36,11 @@ namespace balancebook {
 		}
 	}
 
-	void 		balance::withdraw( const account_name from, const eosio::asset& amount ) {
+	void 		balance::withdraw( const eosio::name from, const eosio::asset& amount ) {
 		require_auth( from );
 		assert_amount( amount );
 
-		auto iterator = balance_of.find( from );
+		auto iterator = balance_of.find( from.value );
 		if (iterator == balance_of.end()) {
 			eosio_assert( false, "unknown user");
 		}
@@ -46,7 +50,7 @@ namespace balancebook {
 	}
 
 // private
-	void	balance::create_balance( const account_name user, const eosio::asset& amount) {
+	void	balance::create_balance( const eosio::name user, const eosio::asset& amount) {
 		balance_of.emplace( _self, [&]( auto& row ) {
 			row.owner = user;
 			row.eos_balance = amount;
@@ -54,14 +58,14 @@ namespace balancebook {
 	}
 	
 	template<typename T>
-	void	balance::add_balance( const account_name user, const eosio::asset& amount, T iterator) {
+	void	balance::add_balance( const eosio::name user, const eosio::asset& amount, T iterator) {
 		balance_of.modify( iterator, _self, [&]( auto& row ) {
 			row.eos_balance += amount;
 		});
 	}
 
 	template<typename T>
-	void	balance::sub_balance( const account_name user, const eosio::asset& amount, T iterator) {
+	void	balance::sub_balance( const eosio::name user, const eosio::asset& amount, T iterator) {
 		balance_of.modify( iterator, _self, [&]( auto& row ) {
 			eosio_assert( row.eos_balance >= amount, "insufficient balance" );
 			row.eos_balance -= amount;
@@ -77,10 +81,10 @@ namespace balancebook {
 		balance_of.erase( iterator );
 	}
 
-	void 	balance::transfer( const account_name from, const account_name to, const eosio::asset& amount ) {
+	void 	balance::transfer( const eosio::name from, const eosio::name to, const eosio::asset& amount ) {
 		eosio::action(
-			eosio::permission_level{ from, N(active) },
-			N(eosio.token), N(transfer),
+			eosio::permission_level{ from, eosio::name("active") },
+			eosio::name("eosio.token"), eosio::name("transfer"),
 			std::make_tuple( from, to, amount, std::string(""))
 		).send();
 	}
@@ -89,7 +93,7 @@ namespace balancebook {
 		return (owner);
 	}
 
-	void		balance::assert_amount(const eosio::asset& amount) {
+	void		balance::assert_amount( const eosio::asset& amount ) {
 		eosio_assert( amount.is_valid(), "invalid amount for action" );
 		eosio_assert( amount.amount > 0, "must asset positive amount for action" );
 	}

@@ -1,15 +1,16 @@
 #include "abcounter.hpp"
 
 namespace abcounter {
-	abcounter::abcounter( account_name self ) : contract( self ) {}
+	abcounter::abcounter(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds) : contract(receiver, code, ds) {}
 
-	void abcounter::count( account_name user, std::string type ) {
-		require_auth( N(addressbook) );
+	void abcounter::count( eosio::name user, std::string type ) {
+		require_auth( eosio::name("addressbook") );
 
-		count_index counts( _self, _self );
-		auto iterator = counts.find( user );
+		count_index counts( _code, _code.value );
+
+		auto iterator = counts.find( user.value );
 		if ( iterator == counts.end() ) {
-			counts.emplace( N(addressbook), [&]( auto& row ) {
+			counts.emplace( eosio::name("addressbook"), [&]( auto& row ) {
 				row.key = user;
 				row.loaded = (type == "loaded") ? 1 : 0;
 				row.modified = (type == "modified") ? 1 : 0;
@@ -17,7 +18,7 @@ namespace abcounter {
 			});
 		}
 		else {
-			counts.modify( iterator, N(addressbook), [&]( auto& row ){
+			counts.modify( iterator, eosio::name("addressbook"), [&]( auto& row ){
 				(type == "loaded") ? row.loaded += 1 : 0;
 				(type == "modified" ? row.modified += 1 : 0);
 				(type == "removed" ? row.removed += 1 : 0);
@@ -26,6 +27,6 @@ namespace abcounter {
 	}
 
 	uint64_t	abcounter::counter::primary_key() const {
-		return (key);
+		return (key.value);
 	}
 }

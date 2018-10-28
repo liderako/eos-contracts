@@ -3,13 +3,12 @@
 namespace book {
 	using namespace eosio;
 
-	class addressbook : public eosio::contract {
+	class [[eosio::contract]] addressbook : public eosio::contract {
 		public:
-			addressbook( account_name self );
-			
-			[[eosio::action]]
-			void load(
-				account_name user, 
+			addressbook(eosio::name receiver, eosio::name code,  datastream<const char*> ds);
+
+			ACTION load(
+				eosio::name user, 
 				std::string first_name, 
 				std::string last_name, 
 				std::string street, 
@@ -17,9 +16,8 @@ namespace book {
 				std::string state
 			);
 			
-			[[eosio::action]]
-			void modify(
-				account_name user, 
+			ACTION modify(
+				eosio::name user, 
 				std::string first_name, 
 				std::string last_name, 
 				std::string street, 
@@ -27,29 +25,27 @@ namespace book {
 				std::string state
 			);
 
-			[[eosio::action]]
-			void remove(account_name user);
+			ACTION remove(eosio::name user);
 
-			[[eosio::action]]
-			void notify(account_name user, std::string msg);
+			ACTION notify(eosio::name user, std::string msg);
 
 		private:
 			struct [[eosio::table]] person {
-				uint64_t key;
+				eosio::name key;
 				std::string first_name;
 				std::string last_name;
 				std::string street;
 				std::string city;
 				std::string state;
 
-				uint64_t primary_key() const;
+				capi_name primary_key() const;
 			};
 
-		typedef eosio::multi_index<N( person ), person> address_index;
+		typedef eosio::multi_index<eosio::name("people"), person> address_index;
 
-		void send_summary(account_name user, std::string message);
+		void send_summary(eosio::name user, std::string message);
 
-		void increment_counter( account_name user, std::string type );
+		void increment_counter( eosio::name user, std::string type );
 	};
 }
 // EOSIO_ABI( book::addressbook, (load)(modify)(remove)(notify))

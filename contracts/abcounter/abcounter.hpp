@@ -1,21 +1,21 @@
 #include <eosiolib/eosio.hpp>
 
 namespace abcounter {
-	class abcounter : public eosio::contract {
+	class [[eosio::contract]] abcounter : public eosio::contract {
 		public:
 			using contract::contract;
-			abcounter( account_name self );
-		[[eosio::action]]
-		void count( account_name user, std::string type );
+			abcounter(eosio::name receiver, eosio::name code,  eosio::datastream<const char*> ds);
+		
+		ACTION count( eosio::name user, std::string type );
 		private:
 			struct [[eosio::table]] counter {
-				account_name key;
+				eosio::name key;
 				uint64_t loaded;
 				uint64_t modified;
 				uint64_t removed;
 				uint64_t primary_key() const;
 			};
-			using count_index = eosio::multi_index<N(counts), counter>;
+			using count_index = eosio::multi_index<eosio::name("counts"), counter>;
 	};
-	EOSIO_ABI( abcounter, (count));
+	EOSIO_DISPATCH( abcounter, (count));
 }

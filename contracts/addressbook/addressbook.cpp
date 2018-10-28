@@ -2,14 +2,14 @@
 
 namespace book {
 
-	addressbook::addressbook( account_name self ) : contract( self ) {}
+	addressbook::addressbook(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds) : contract(receiver, code, ds) {}
 
-	uint64_t addressbook::person::primary_key() const {
-		return (key);
+	capi_name addressbook::person::primary_key() const {
+		return (key.value);
 	}
 
 	void	addressbook::load(
-			account_name user,
+			eosio::name user,
 			std::string first_name, 
 			std::string last_name, 
 			std::string street, 
@@ -18,10 +18,10 @@ namespace book {
 		)
 	{
 		require_auth( user );
-		address_index addresses( _self, _self );
-		auto iterator = addresses.find( user );
+		address_index addresses( _code, _code.value );
+		auto iterator = addresses.find( user.value );
 
-		eosio_assert( addresses.find( user ) == addresses.end(), "user already exist" );
+		eosio_assert( iterator == addresses.end(), "user already exist" );
 		addresses.emplace( user, [&]( auto& row ) {
 			row.key = user;
 			row.first_name = first_name;
@@ -35,7 +35,7 @@ namespace book {
 	}
 
 	void 	addressbook::modify(
-			account_name user,
+			 eosio::name user,
 			std::string first_name, 
 			std::string last_name, 
 			std::string street, 
@@ -44,9 +44,9 @@ namespace book {
 		)
 	{
 		require_auth( user );
-		address_index addresses( _self, _self );
-		auto iterator = addresses.find( user );
-		eosio_assert( addresses.find( user ) != addresses.end(), "user don't exist" );
+		address_index addresses( _code, _code.value );
+		auto iterator = addresses.find( user.value );
+		eosio_assert( iterator != addresses.end(), "user don't exist" );
 		addresses.modify( iterator, user, [&]( auto& row ) {
 			row.first_name = first_name;
 			row.last_name = last_name;
@@ -58,58 +58,56 @@ namespace book {
 		increment_counter( user, "modified" );
 	}
 
-	void 	addressbook::remove( account_name user ) {
+	void 	addressbook::remove(  eosio::name user ) {
 		require_auth( user );
-		address_index addresses( _self, _self );
-		auto iterator = addresses.find( user );
+		address_index addresses( _code, _code.value );
+		auto iterator = addresses.find( user.value );
 		eosio_assert( iterator != addresses.end(), "Record does not exist" );
 		addresses.erase( iterator );
 		send_summary( user, "successfully remove record in addressbook" );
 		increment_counter( user, "removed" );
 	}
 	
-	void 	addressbook::notify( account_name user, std::string msg ) {
+	void 	addressbook::notify(  eosio::name user, std::string msg ) {
 		require_auth( get_self() );
-		require_recipient( user );
+		require_recipient( user.value );
 	}
 
-	void 	addressbook::send_summary( account_name user, std::string message ) {
+	void 	addressbook::send_summary(  eosio::name user, std::string message ) {
 		action(
-			permission_level{ get_self(), N(active) },
+			permission_level{ get_self(), name("active") },
 			get_self(),
-			N(notify),
+			name("notify"),
 			std::make_tuple( user, name{user}.to_string() + message )
 		).send();
 	}
 
-	void 	addressbook::increment_counter(account_name user, std::string type) {
+	void 	addressbook::increment_counter( eosio::name user, std::string type) {
 		action counter = action(
-			permission_level{ get_self(), N(active) },
-			N(abcounter),
-			N(count),
+			permission_level{ get_self(), eosio::name("active") },
+			eosio::name("abcounter"),
+			eosio::name("count"),
 			std::make_tuple( user, type)
 		);
 		counter.send();
 	}
 }
 
-
 extern "C" {
 using namespace book;
 
-	void apply(uint64_t self, uint64_t code, uint64_t action) {
-		addressbook _addressbook(self);
-		if( code == self && action == N(load) ) {
-			execute_action( &_addressbook, &addressbook::load );
+	void apply(eosio::name self, eosio::name code, eosio::name action) {
+		if( code == self && action == eosio::name("load") ) {
+			execute_action( self, code, &addressbook::load );
 		}
-		else if ( code == self && action == N(modify) ) {
-			execute_action( &_addressbook, &addressbook::modify);
+		else if ( code == self && action == eosio::name("modify") ) {
+			execute_action( self, code, &addressbook::modify);
 		}
-		else if( code == self && action == N(notify) ) {
-			execute_action( &_addressbook, &addressbook::notify );
+		else if( code == self && action == eosio::name("notify") ) {
+			execute_action( self, code, &addressbook::notify );
 		}
-		else if( code == self && action == N(erase) ) {
-			execute_action( &_addressbook, &addressbook::remove );
+		else if( code == self && action == eosio::name("remove") ) {
+			execute_action( self, code, &addressbook::remove );
 		}
 	}
 };
