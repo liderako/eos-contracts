@@ -8,8 +8,8 @@ namespace balancebook {
 			eosio::datastream<const char*> ds
 		)
 		: contract(receiver, code, ds),
-		balance_of( _code, _code.value );
 	{
+		balance_index 	balance_of( _code, _code.value );
 		auto iterator = balance_of.find( _code.value );
 		if ( iterator == balance_of.end() ) {
 			create_balance( receiver, eosio::asset(0, eosio::symbol(eosio::symbol_code("EOS"), 4)));
@@ -17,6 +17,7 @@ namespace balancebook {
 	}
 
 	void 		balance::deposit( const eosio::name _sender, const eosio::asset& _quantity ) {
+		balance_index 	balance_of( _code, _code.value );
 		auto data = eosio::unpack_action_data<balance::transfer_args>();
 
 		if (data.from == _self || data.to != _self)
@@ -37,6 +38,7 @@ namespace balancebook {
 	}
 
 	void 		balance::withdraw( const eosio::name from, const eosio::asset& amount ) {
+		balance_index 	balance_of( _code, _code.value );
 		require_auth( from );
 		assert_amount( amount );
 

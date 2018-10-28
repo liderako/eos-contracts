@@ -33,7 +33,6 @@ namespace balancebook {
 				bool			is_empty() const;
 			};
 			typedef eosio::multi_index<eosio::name("balance.of"), t_balance> balance_index;
-			
 			balance_index 	balance_of;
 
 		private:
