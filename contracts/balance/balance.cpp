@@ -7,7 +7,8 @@ namespace balancebook {
 			eosio::name code,
 			eosio::datastream<const char*> ds
 		)
-		: contract(receiver, code, ds)
+		: contract(receiver, code, ds),
+		balance_of( _code, _code.value );
 	{
 		auto iterator = balance_of.find( _code.value );
 		if ( iterator == balance_of.end() ) {
