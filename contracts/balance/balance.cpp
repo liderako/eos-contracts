@@ -11,7 +11,7 @@ namespace balancebook {
 	{
 		auto iterator = balance_of.find( _code.value );
 		if ( iterator == balance_of.end() ) {
-			create_balance( receiver, eosio::asset(0, eosio::string_to_symbol(4,"EOS")) );
+			create_balance( receiver, eosio::asset(0, symbol(symbol_code("EOS"),4)));
 		}
 	}
 
