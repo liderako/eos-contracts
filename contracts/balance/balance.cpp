@@ -10,6 +10,7 @@ namespace balancebook {
 		: contract(receiver, code, ds),
 	{
 		balance_index 	balance_of( _code, _code.value );
+
 		auto iterator = balance_of.find( _code.value );
 		if ( iterator == balance_of.end() ) {
 			create_balance( receiver, eosio::asset(0, eosio::symbol(eosio::symbol_code("EOS"), 4)));
@@ -18,6 +19,7 @@ namespace balancebook {
 
 	void 		balance::deposit( const eosio::name _sender, const eosio::asset& _quantity ) {
 		balance_index 	balance_of( _code, _code.value );
+
 		auto data = eosio::unpack_action_data<balance::transfer_args>();
 
 		if (data.from == _self || data.to != _self)
