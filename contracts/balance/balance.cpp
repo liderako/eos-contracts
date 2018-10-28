@@ -2,7 +2,6 @@
 
 namespace balancebook {
 //public
-	// addressbook::addressbook(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds) : contract(receiver, code, ds) {}
 	balance::balance(
 			eosio::name receiver,
 			eosio::name code,
@@ -10,10 +9,10 @@ namespace balancebook {
 		)
 		: contract(receiver, code, ds)
 	{
-		// auto iterator = balance_of.find( _code.value );
-		// if ( iterator == balance_of.end() ) {
-		// 	create_balance( receiver, eosio::asset(0, eosio::string_to_symbol(4,"EOS")) );
-		// }
+		auto iterator = balance_of.find( _code.value );
+		if ( iterator == balance_of.end() ) {
+			create_balance( receiver, eosio::asset(0, eosio::string_to_symbol(4,"EOS")) );
+		}
 	}
 
 	void 		balance::deposit( const eosio::name _sender, const eosio::asset& _quantity ) {
