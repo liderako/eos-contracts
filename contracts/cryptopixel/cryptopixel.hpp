@@ -3,30 +3,26 @@
 #include <eosiolib/symbol.hpp>
 #include "../balance/balance.cpp"
 
-class cryptopixel : public balancebook::balance {
+class [[eosio::contract]] cryptopixel : public balancebook::balance {
 	public:
-		cryptopixel( account_name self );
+		cryptopixel( eosio::name receiver, eosio::name code,  eosio::datastream<const char*> ds );
 		
-		[[eosio::action]]
-		void buypixel( account_name sender, uint64_t x, uint64_t y, uint64_t color, std::string massage ) ;
+		ACTION initpixel( const eosio::name sender, uint64_t x, uint64_t y, uint64_t color, std::string massage ) ;
 
-		[[eosio::action]]
-		void transfer( account_name sender, account_name to, uint64_t id );
+		ACTION transfer( const eosio::name sender, const eosio::name to, uint64_t id );
 
 	private:
-		struct [[eosio::table]] t_color {
+		struct [[eosio::table, eosio::contract("cryptopixel")]] t_color {
 				uint64_t		_id;
 				uint64_t 		_x;
 				uint64_t 		_y;
-				account_name 	_owner;
+				eosio::name 	_owner;
 				uint64_t 		_color;
 				std::string 	_massage;
 
-				//t_color(uint64_t id, uint64_t x, uint64_t y, account_name owner, uint64_t color, std::string massage);
-				
 				uint64_t 		primary_key() const;
 				bool 			is_empty() const;
-				void			only_owner( account_name owner ) const;
+				// void			only_owner( account_name owner ) const;
 		};
 
 		static uint32_t const MAX_X = 1000;
@@ -37,15 +33,9 @@ class cryptopixel : public balancebook::balance {
 
 		eosio::asset _price;
 
-		typedef eosio::multi_index<N(pixel.map), t_color> pixel_index;
+		typedef eosio::multi_index<eosio::name("pixel.map"), t_color> pixel_index;
 
 		pixel_index pixel_of;
 
-		void create_pixel( account_name sender, uint64_t id, uint64_t x, uint64_t y, uint64_t color, std::string massage );
+		void create_pixel( const eosio::name sender, uint64_t id, uint64_t x, uint64_t y, uint64_t color, std::string massage );
 };
-
-// id = 0;
-// id = 1; x = 1; y = 0;
-// id = 1000; x = 1000; y = 0;
-// id = 1001; x = 0; y = 1
-// id 1 000 000 / 1000 

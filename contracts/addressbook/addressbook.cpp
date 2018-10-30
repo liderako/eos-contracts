@@ -111,3 +111,5 @@ using namespace book;
 		}
 	}
 };
+
+//set account permission addressbook active '{"threshold": 1,"keys": [{"key": "EOS8aTaugtHoTA5vMfgFM5heTRfMk2PuvE3o6JBaZrVVHNYqwKDi4","weight": 1}], "accounts": [{"permission":{"actor":"addressbook","permission":"eosio.code"},"weight":1}]}' -p addressbook@owner

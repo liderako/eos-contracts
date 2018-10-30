@@ -1,0 +1,61 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Oct 29 14:58:55 2018",
+    "version": "eosio::abi/1.0",
+    "structs": [
+        {
+            "name": "count",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "counter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "name"
+                },
+                {
+                    "name": "loaded",
+                    "type": "uint64"
+                },
+                {
+                    "name": "modified",
+                    "type": "uint64"
+                },
+                {
+                    "name": "removed",
+                    "type": "uint64"
+                }
+            ]
+        }
+    ],
+    "types": [],
+    "actions": [
+        {
+            "name": "count",
+            "type": "count",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "counts",
+            "type": "counter",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "abi_extensions": []
+}

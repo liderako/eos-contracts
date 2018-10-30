@@ -22,10 +22,10 @@ namespace balancebook {
 			void	add_balance( const eosio::name user, const eosio::asset& quantity, T iterator );
 
 			template<typename T>
-			void	sub_balance( const eosio::name user, const eosio::asset& amount, T iterator);
+			void	sub_balance( const eosio::name user, const eosio::asset& amount, T iterator );
 
 		protected:
-			struct [[eosio::table]] t_balance {
+			struct [[eosio::table, eosio::contract("cryptopixel")]] t_balance {
 				eosio::name	owner;
 				eosio::asset	eos_balance;
 
@@ -33,10 +33,10 @@ namespace balancebook {
 				bool			is_empty() const;
 			};
 			typedef eosio::multi_index<eosio::name("balance.of"), t_balance> balance_index;
-			
-			balance_index 	balance_of;
 
+			balance_index balance_of;
 		private:
+
 			void 	assert_amount( const eosio::asset& amount );
 
 			void 	transfer( const eosio::name from, const eosio::name to, const eosio::asset& amount );
