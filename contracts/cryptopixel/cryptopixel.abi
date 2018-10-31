@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Oct 29 17:10:43 2018",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Tue Oct 30 18:38:59 2018",
     "version": "eosio::abi/1.0",
     "structs": [
         {
@@ -31,6 +31,64 @@
             ]
         },
         {
+            "name": "buypixel",
+            "base": "",
+            "fields": [
+                {
+                    "name": "sender",
+                    "type": "name"
+                },
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "new_color",
+                    "type": "uint64"
+                },
+                {
+                    "name": "new_message",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "cancelsell",
+            "base": "",
+            "fields": [
+                {
+                    "name": "sender",
+                    "type": "name"
+                },
+                {
+                    "name": "id",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "editpixel",
+            "base": "",
+            "fields": [
+                {
+                    "name": "sender",
+                    "type": "name"
+                },
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "color",
+                    "type": "uint64"
+                },
+                {
+                    "name": "message",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "initpixel",
             "base": "",
             "fields": [
@@ -51,8 +109,26 @@
                     "type": "uint64"
                 },
                 {
-                    "name": "massage",
+                    "name": "message",
                     "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "sellpixel",
+            "base": "",
+            "fields": [
+                {
+                    "name": "sender",
+                    "type": "name"
+                },
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "price_sell",
+                    "type": "asset"
                 }
             ]
         },
@@ -95,8 +171,26 @@
                     "type": "uint64"
                 },
                 {
-                    "name": "_massage",
+                    "name": "_message",
                     "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "t_sell",
+            "base": "",
+            "fields": [
+                {
+                    "name": "_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "_owner",
+                    "type": "name"
+                },
+                {
+                    "name": "_price",
+                    "type": "asset"
                 }
             ]
         },
@@ -122,16 +216,6 @@
     "types": [],
     "actions": [
         {
-            "name": "initpixel",
-            "type": "initpixel",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "transfer",
-            "type": "transfer",
-            "ricardian_contract": ""
-        },
-        {
             "name": "deposit",
             "type": "deposit",
             "ricardian_contract": ""
@@ -139,6 +223,36 @@
         {
             "name": "withdraw",
             "type": "withdraw",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "buypixel",
+            "type": "buypixel",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "cancelsell",
+            "type": "cancelsell",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editpixel",
+            "type": "editpixel",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "initpixel",
+            "type": "initpixel",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "sellpixel",
+            "type": "sellpixel",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "transfer",
+            "type": "transfer",
             "ricardian_contract": ""
         }
     ],
@@ -153,6 +267,13 @@
         {
             "name": "pixel.map",
             "type": "t_color",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "sell.map",
+            "type": "t_sell",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

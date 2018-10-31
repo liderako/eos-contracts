@@ -15,6 +15,18 @@ extern "C" {
 		else if ( code == self && action == eosio::name("transfer") ) {
 			execute_action( self, code, &cryptopixel::transfer );
 		}
+		else if ( code == self && action == eosio::name("editpixel") ) {
+			execute_action( self, code, &cryptopixel::editpixel);
+		}
+		else if ( code == self && action == eosio::name("buypixel") ) {
+			execute_action( self, code, &cryptopixel::buypixel );
+		}
+		else if ( code == self && action == eosio::name("sellpixel") ) {
+			execute_action( self, code, &cryptopixel::sellpixel );
+		}
+		else if ( code == self && action == eosio::name("cancelsell") ) {
+			execute_action( self, code, &cryptopixel::cancelsell);
+		}
 	}
 };
 

@@ -7,10 +7,17 @@ class [[eosio::contract]] cryptopixel : public balancebook::balance {
 	public:
 		cryptopixel( eosio::name receiver, eosio::name code,  eosio::datastream<const char*> ds );
 		
-		ACTION initpixel( const eosio::name sender, uint64_t x, uint64_t y, uint64_t color, std::string massage ) ;
+		ACTION initpixel( const eosio::name sender, uint64_t x, uint64_t y, uint64_t color, std::string message ) ;
 
 		ACTION transfer( const eosio::name sender, const eosio::name to, uint64_t id );
 
+		ACTION editpixel( const eosio::name sender, uint64_t id, uint64_t color, std::string message );
+		
+		ACTION buypixel( const eosio::name sender, uint64_t id, uint64_t new_color, std::string new_message );
+
+		ACTION sellpixel( const eosio::name sender, uint64_t id, const eosio::asset price_sell );
+
+		ACTION cancelsell( const eosio::name sender, uint64_t id );
 	private:
 		struct [[eosio::table, eosio::contract("cryptopixel")]] t_color {
 				uint64_t		_id;
@@ -18,11 +25,18 @@ class [[eosio::contract]] cryptopixel : public balancebook::balance {
 				uint64_t 		_y;
 				eosio::name 	_owner;
 				uint64_t 		_color;
-				std::string 	_massage;
+				std::string 	_message;
 
 				uint64_t 		primary_key() const;
 				bool 			is_empty() const;
-				// void			only_owner( account_name owner ) const;
+		};
+
+		struct [[eosio::table, eosio::contract("cryptopixel")]] t_sell {
+			uint64_t 		_id;
+			eosio::name 	_owner;
+			eosio::asset 	_price;
+
+			uint64_t primary_key() const;
 		};
 
 		static uint32_t const MAX_X = 1000;
@@ -31,11 +45,17 @@ class [[eosio::contract]] cryptopixel : public balancebook::balance {
 
 		static uint32_t const MAX_ID = MAX_X * MAX_Y;
 
-		eosio::asset _price;
+		static uint32_t const MAX_COLOR = 0xFFFFFF;
 
 		typedef eosio::multi_index<eosio::name("pixel.map"), t_color> pixel_index;
 
-		pixel_index pixel_of;
+		typedef eosio::multi_index<eosio::name("sell.map"), t_sell> sell_index;
 
-		void create_pixel( const eosio::name sender, uint64_t id, uint64_t x, uint64_t y, uint64_t color, std::string massage );
+		pixel_index _pixel_of;
+		
+		sell_index	_sell_of;
+
+		eosio::asset _price_init;
+
+		void create_pixel( const eosio::name sender, uint64_t id, uint64_t x, uint64_t y, uint64_t color, std::string message );
 };
